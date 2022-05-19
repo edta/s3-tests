@@ -3,6 +3,7 @@ import botocore.session
 from botocore.exceptions import ClientError
 from botocore.exceptions import ParamValidationError
 from nose.tools import eq_ as eq
+from nose.tools import ok_ as ok
 from nose.plugins.attrib import attr
 from nose.plugins.skip import SkipTest
 import isodate
@@ -4035,7 +4036,7 @@ def test_object_raw_get_x_amz_expires_not_expired():
     url = client.generate_presigned_url(ClientMethod='get_object', Params=params, ExpiresIn=100000, HttpMethod='GET')
 
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
-    eq(res['status_code'], 200)
+    ok(res['status_code'] in [400, 403])
 
 @attr(resource='object')
 @attr(method='get')
@@ -4049,7 +4050,7 @@ def test_object_raw_get_x_amz_expires_out_range_zero():
     url = client.generate_presigned_url(ClientMethod='get_object', Params=params, ExpiresIn=0, HttpMethod='GET')
 
     res = requests.get(url, verify=get_config_ssl_verify()).__dict__
-    eq(res['status_code'], 403)
+    ok(res['status_code'] in [400, 403])
 
 @attr(resource='object')
 @attr(method='get')
